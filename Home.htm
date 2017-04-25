@@ -1,0 +1,298 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" >
+<script type="text/javascript" src="Scripts/angular.js"></script> 
+<script type="text/javascript" src="Scripts/angular.min.js"></script>
+<!--<script type="text/javascript" src="Scripts/MyScripts/Modules.js"></script>  
+<script type="text/javascript" src="Scripts/MyScripts/Services.js"></script>  
+<script type="text/javascript" src="Scripts/MyScripts/Controllers.js"></script>-->
+<!--<script type="text/javascript" src="Scripts/angular.min.js"></script>
+<script type="text/javascript" src="Scripts//Controller/jquery-1.11.0.js"></script>
+<script type="text/javascript" src="Scripts/Controller/App.js"></script>
+<script type="text/javascript" src="Scripts/Controller/Controller.js"></script>
+<script type="text/javascript" src="Scripts/Controller/Service.js"></script>
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml" data-ng-app="RESTClientModule">
+<head>
+    <title>"Manage Student Information using AngularJs, WCF REST & HTML</title>
+    <!--<meta http-equiv="refresh" content="15" />-->
+</head>
+<body>
+    <table id="tblContainer" data-ng-controller="CRUD_AngularJs_RESTController">  
+        <tr>  
+            <td>  
+                <table ng-table="tblContainer" style="border: solid 2px Green; padding: 5px;">  
+                    <tr style="height: 30px; background-color: skyblue; color: maroon;">  
+                        <th></th>  
+                        <th>ID</th>  
+                        <th>Name</th>  
+                        <th>Email</th>  
+                        <th>Class</th>  
+                        <th>Year</th>  
+                        <th>City</th>  
+                        <th>Country</th>  
+                        <th></th>  
+                        <th></th>  
+                    </tr>
+                    <tbody ng-repeat="stud in Students">
+                        <tr>  
+                            <td></td>  
+                            <td><span>{{stud.StudentID}}</span></td>  
+                            <td><span>{{stud.Name}}</span></td>  
+                            <td><span>{{stud.Email}}</span></td>  
+                            <td><span>{{stud.Class}}</span></td>  
+                            <td><span>{{stud.EnrollYear}}</span></td>  
+                            <td><span>{{stud.City}}</span></td>  
+                            <td><span>{{stud.Country}}</span></td>  
+                            <td>  
+                                <input type="button" id="Edit" value="Edit" data-ng-click="getStudent(stud)" />
+                            </td>
+                            <td>  
+                                <input type="button" id="Delete" value="Delete" data-ng-click="deleteStudent(stud)" />
+                            </td>  
+                        </tr>  
+                    </tbody>  
+                </table>  
+            </td>  
+        </tr>  
+        <tr>  
+            <td>  
+                <div style="color: red;">{{Message}}</div>  
+                <table style="border: solid 4px Red; padding: 2px;">  
+                    <tr>  
+                        <td></td>  
+                        <td>  
+                            <span>Student ID</span>  
+                        </td>  
+                        <td>  
+                            <input type="text" id="StudentID" readonly="readonly" data-ng-model="StudentID" />  
+                        </td>  
+                    </tr>  
+                    <tr>  
+                        <td></td>  
+                        <td>  
+                            <span>Student Name</span>  
+                        </td>  
+                        <td>  
+                            <input type="text" id="sName" required data-ng-model="Name" />  
+                        </td>  
+                    </tr>  
+                    <tr>  
+                        <td></td>  
+                        <td>  
+                            <span>Email</span>  
+                        </td>  
+                        <td>  
+                            <input type="text" id="sEmail" required data-ng-model="Email" />  
+                        </td>  
+                    </tr>  
+                    <tr>  
+                        <td></td>  
+                        <td>  
+                            <span>Class</span>  
+                        </td>  
+                        <td>  
+                            <input type="text" id="sClass" required data-ng-model="Class" />  
+                        </td>  
+                    </tr>  
+                    <tr>  
+                        <td></td>  
+                        <td>  
+                            <span>Enrollement Year</span>  
+                        </td>  
+                        <td>  
+                            <input type="text" id="sEnrollYear" required data-ng-model="EnrollYear" />  
+                        </td>  
+                    </tr>  
+                    <tr>  
+                        <td></td>  
+                        <td>  
+                            <span>City</span>  
+                        </td>  
+                        <td>  
+                            <input type="text" id="sCity" required data-ng-model="City" />  
+                        </td>  
+                    </tr>  
+                    <tr>  
+                        <td></td>  
+                        <td>  
+                            <span>Country</span>  
+                        </td>  
+                        <td>  
+                            <input type="text" id="sCountry" required data-ng-model="Country" />  
+                        </td>  
+                    </tr>  
+                    <tr>  
+                        <td></td>  
+                        <td></td>  
+                        <td>  
+                            <input type="button" id="save" value="Save" data-ng-click="save();" />  
+  
+                            <input type="button" id="Clear" value="Clear" data-ng-click="clear()" />  
+                        </td>  
+                    </tr>  
+                </table>  
+            </td>  
+        </tr>
+        <tr>
+            <td>
+                <input type="button" id="Refresh" value="Refresh" data-ng-click="Refresh()" />
+            </td>
+        </tr>  
+      </table>  
+      
+      
+    <script type="text/javascript">
+    var app;
+
+    (function() 
+    {
+        app = angular.module("RESTClientModule", []).config(['$httpProvider', function ($httpProvider) //; //['ngRoute']);
+                            { 
+                               if (!$httpProvider.defaults.headers.get) 
+                               { 
+                                  $httpProvider.defaults.headers.get = {}; 
+                               } 
+                               //$httpProvider.defaults.headers.get['If-Modified-Since'] = 'Mon, 26 Jul 1997 05:00:00 GMT';
+                               $httpProvider.defaults.headers.get['Cache-Control'] = 'no-cache';
+                               $httpProvider.defaults.headers.get['Pragma'] = 'no-cache'; 
+                            }]);  
+    })(); 
+    
+    app.controller("CRUD_AngularJs_RESTController", function ($scope, $http, $timeout)
+    {  
+        $scope.OperType = 1;  
+        //1 Mean New Entry
+        
+        $scope.Students=[];
+   
+        //To Get All Records  
+        $scope.GetAllRecords=function () 
+        {  
+            //var today = new Date();
+            //var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate(); 
+            //var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            //alert('http://localhost:63845/StudentService.svc/GetAllStudent?date='+date+' '+time);
+            //debugger;
+            $http.get('http://localhost/WCFRESTAPI/StudentService.svc/GetAllStudent').success(function (data) {
+                console.log(data);
+                $scope.Students = data;
+                console.log($scope.Students);
+            });
+        };        
+        
+        var init=function(){
+            $scope.GetAllRecords();
+        } 
+        init();
+        
+        $scope.triggerChangeWithApply = function () 
+        {
+            $timeout(function()
+            {
+              $scope.GetAllRecords();
+            }, 15000 )
+        };
+         
+        //To Clear all input controls.  
+        function ClearModels() 
+        {  
+            $scope.OperType = 1;  
+            $scope.StudentID = "";  
+            $scope.Name = "";  
+            $scope.Email = "";  
+            $scope.Class = "";  
+            $scope.EnrollYear = "";  
+            $scope.City = "";  
+            $scope.Country = "";  
+        }  
+      
+        //To Create new record and Edit an existing Record.  
+        $scope.save = function () {  
+            var Student = {  
+                              Name: $scope.Name,  
+                              Email: $scope.Email,  
+                              Class: $scope.Class,  
+                              EnrollYear: $scope.EnrollYear,  
+                              City: $scope.City,  
+                              Country: $scope.Country  
+                          };                  
+            if ($scope.OperType === 1) 
+            {  
+                //Add the record
+                //debugger;
+                $http({
+                        method: 'POST',
+                        url: 'http://localhost/WCFRESTAPI/StudentService.svc/AddNewStudent',
+                        data: Student
+                     }).success(function (data) {
+                          if(data == true)
+                          {
+                             $scope.Message = "Student Added Successfuly";
+                             ClearModels();
+                             $scope.GetAllRecords();
+                          }
+                     }).error(function () {
+                          alert(data.errors);
+                     }); 
+            } 
+            else 
+            {  
+                //Edit the record      
+                //debugger;
+                Student.StudentID = $scope.StudentID;               
+                 $http({
+                        method: 'PUT',
+                        url: 'http://localhost/WCFRESTAPI/StudentService.svc/UpdateStudent',
+                        data: Student
+                       }).success(function (data, status, headers, config) {
+                            $scope.Message = "Student Updated Successfuly";
+                            ClearModels();
+                            $scope.GetAllRecords();
+                       }).error(function (data, status, headers, config) {
+                            alert(headers);
+                       });  
+            }
+        };  
+      
+        //To Get Student Detail on the Base of Student ID  
+        $scope.getStudent = function (Student) 
+        {  
+            $http.get('http://localhost/WCFRESTAPI/StudentService.svc/GetStudentDetails/' + Student.StudentID)
+            .success(function (data, status, headers, config) {
+                //debugger;
+                var res = data;
+                $scope.StudentID = res.StudentID;  
+                $scope.Name = res.Name;  
+                $scope.Email = res.Email;  
+                $scope.Class = res.Class;  
+                $scope.EnrollYear = res.EnrollYear;  
+                $scope.City = res.City;  
+                $scope.Country = res.Country;  
+                $scope.OperType = 0;  
+            })
+            .error(function () {
+                alert(data.errors);
+            }); 
+        };  
+      
+        //To Delete Record  
+        $scope.deleteStudent = function (Student) 
+        {  
+            varIsConf = confirm('Want to delete ' + Student.Name + '. Are you sure?');
+            if (varIsConf) {
+                $http.delete('http://localhost/WCFRESTAPI/StudentService.svc/DeleteStudent/' + Student.StudentID)
+                  .success(function () {
+                      $scope.Message = "Student Deleted Successfuly";  
+                      $scope.GetAllRecords();  
+                  })
+                  .error(function () {
+                     alert(data.errors);
+                  });
+            }  
+        }; 
+    });
+    
+</script> 
+      
+</body>
+</html>
